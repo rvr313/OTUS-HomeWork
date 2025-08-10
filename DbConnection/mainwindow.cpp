@@ -133,16 +133,7 @@ void MainWindow::connectDb()
         if (!query.exec()) {
             qDebug() <<  query.lastError();
         }
-
-#if 0
-        int c = 5;
-        qDebug() << query.record().count();
-        while (query.next() && ((c--) > 0)) {
-            qDebug() << query.value(0).toString() << query.value(1).toString() << query.value(2).toString();
-        }
-#endif
     }
-
     emit dbConnected();
 }
 
@@ -150,17 +141,10 @@ void MainWindow::showDbData()
 {
     QSqlTableModel *model = new QSqlTableModel;
     model->setTable("Gold");
-    // model->setEditStrategy(QSqlTableModel::OnManualSubmit);
     model->setHeaderData(0, Qt::Horizontal, tr("Date Time"));
     model->setHeaderData(1, Qt::Horizontal, tr("Purchase Price"));
     model->setHeaderData(2, Qt::Horizontal, tr("Sell Price"));
 
-    //ui->tableView->setColumnHidden(0, true);
-    //ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    //ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
-    //ui->tableView->resizeColumnToContents(0);
-    //ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    //ui->tableView->horizontalHeader()->setStretchLastSection(true);
     ui->tableView->setModel(model);
     model->select();
 
