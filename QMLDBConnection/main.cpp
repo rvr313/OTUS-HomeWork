@@ -12,32 +12,9 @@ int main(int argc, char *argv[])
 #endif
     QGuiApplication app(argc, argv);
 
-    const QString driverName = "QSQLITE";
-
-    if (!QSqlDatabase::isDriverAvailable(driverName)) {
-        qDebug() << "No driver found" << driverName;
-        qDebug() << "Available drivers:" <<  QSqlDatabase::drivers();
-        return EXIT_FAILURE;
-    }
-
-    QSqlDatabase db = QSqlDatabase::addDatabase(driverName);
-    db.setDatabaseName(":memory:");
-
-    if (db.isValid()) {
-        qDebug() << "DB is  valid";
-    }
     DbConnect connection;
-
+    DbConnect::addDatabase();
     TableModel table_model;
-    // QSqlTableModel *table_model = new QSqlTableModel();
-    // connection.connectDb();
-    // table_model->setTable("Gold");
-    // table_model->setHeaderData(0, Qt::Horizontal, "Date Time");
-    // table_model->setHeaderData(1, Qt::Horizontal, "Purchase Price");
-    // table_model->setHeaderData(2, Qt::Horizontal, "Sell Price");
-    // table_model->select();
-
-    qmlRegisterType<TableModel>("MyTableModel", 1, 0, "MyTableModel");
 
     QObject::connect(&connection, &DbConnect::dbConnected, &table_model, &TableModel::allDataChanged);
 
