@@ -10,20 +10,8 @@ namespace {
 
 bool connectDb()
 {
-#if 0
-    const QString driverName = "QSQLITE";
-
-    if (!QSqlDatabase::isDriverAvailable(driverName)) {
-        qDebug() << "No driver found" << driverName;
-        qDebug() << "Available drivers:" <<  QSqlDatabase::drivers();
-        return false;
-    }
-
-    QSqlDatabase db = QSqlDatabase::addDatabase(driverName);
-    db.setDatabaseName(":memory:");
-#else
     QSqlDatabase db = QSqlDatabase::database();
-#endif
+
     if (!db.open()) {
         QSqlError err = db.lastError();
         qDebug() << err.nativeErrorCode() << ": " << err.text();
@@ -35,7 +23,7 @@ bool connectDb()
 
 bool importCsvToDb()
 {
-    const QString csvFile = "../../gold.csv";
+    const QString csvFile = "../gold.csv";
     QFile file(csvFile);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "Cannot open CSV data file - " << csvFile;
@@ -85,33 +73,62 @@ bool importCsvToDb()
 
 } // anonymous namespace
 
-DbConnect::DbConnect(QObject *parent)
-    : QObject{parent}
+DbConnect::DbConnect(QObject *parent) : QObject(parent)
 {
+    // Nothing else to do.
+}
+
+bool DbConnect::connected() const
+{
+    return m_connected;
+}
+
+bool DbConnect::addDatabase()
+{
+    const QString driverName = "QSQLITE";
+
+    if (!QSqlDatabase::isDriverAvailable(driverName)) {
+        qDebug() << "No driver found" << driverName;
+        qDebug() << "Available drivers:" <<  QSqlDatabase::drivers();
+        return false;
+    }
+
+    QSqlDatabase db = QSqlDatabase::addDatabase(driverName);
+    db.setDatabaseName(":memory:");
+
+    return true;
+}
+
+void DbConnect::setConnected(bool connected)
+{
+    if (m_connected == connected)
+        return;
+
+    m_connected = connected;
+    emit dbConnected();
 }
 
 void DbConnect::connectDb()
 {
     // Check if DB is already connected.
-    // if (QSqlDatabase::database().isOpen()) {
-    //     return;
-    // }
+    if (connected()) {
+         return;
+     }
 
     if (!::connectDb()) {
         return;
     }
 
-    {
-        QSqlQuery query;
-        QString cmd = "CREATE TABLE Gold (DateTime TEXT, PricePurchase REAL, PriceSell REAL);";
-        if (!query.prepare(cmd) || !query.exec()) {
-            qDebug() << query.lastError();
-            return;
-        }
+    QSqlQuery query;
+    QString cmd = "CREATE TABLE Gold (DateTime TEXT, PricePurchase REAL, PriceSell REAL);";
+    if (!query.prepare(cmd) || !query.exec()) {
+        qDebug() << query.lastError();
+        return;
     }
 
     importCsvToDb();
 
-    emit dbConnected();
-}
+    qDebug() << "DB connected";
 
+    setConnected(true);
+}
