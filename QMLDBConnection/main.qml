@@ -1,75 +1,37 @@
-import QtQuick 2.14
-import QtQuick.Window 2.14
-import QtQuick.Layouts
-import QtQuick.Controls
-import Qt.labs.qmlmodels
-//import MyTableModel 1.0
+import QtQuick 2.12
+import QtQuick.Window 2.12
+import QtQuick.Layouts 1.12
+import QtQuick.Controls 1.4
+import Qt.labs.qmlmodels 1.0
 
 Window {
-    id: root
+    visible: true
     width: 640
     height: 480
-    visible: true
     title: qsTr("Gold Price Table")
-
-    // HorizontalHeaderView {
-    //     id: horizontalHeader
-    //     anchors.left: tableViewId.left
-    //     anchors.top: parent.top
-    //     syncView: tableViewId
-    // }
-
-    // VerticalHeaderView {
-    //     id: verticalHeader
-    //     anchors.top: tableViewId.top
-    //     anchors.left: parent.left
-    //     syncView: tableViewId
-    // }
-    // HorizontalHeaderView {
-    //     id: horizontalHeader
-    //     anchors.left: tableViewId.left
-    //     anchors.top: parent.top
-    //     syncView: tableViewId
-    //     clip: true
-    // }
-
-    // VerticalHeaderView {
-    //     id: verticalHeader
-    //     anchors.top: tableViewId.top
-    //     anchors.left: parent.left
-    //     syncView: tableViewId
-    //     clip: true
-    // }
-
-    // MyTableModel {
-    //     id: tableModelId
-
-    // }
-
-    // TableView {
-    //     id: tableViewId
-
-    //     model: tableModelId
-
-    // }
-
-    // Connections {
-    //     target: dbc
-    //     function onDbConnected() {
-    //         console.log("DB connected")
-    //         tableModelId.allDataChanged()
-    //     }
-    // }
 
     ColumnLayout {
         id: columnLayoutId
         anchors.fill: parent
         spacing: 5
 
-
         TableView {
+            TableViewColumn {
+                role: "datetime"
+                title: "Date Time"
+            }
+            TableViewColumn {
+                role: "purchase"
+                title: "Purchase Price"
+            }
+            TableViewColumn {
+                role: "sell"
+                title: "Sell Price"
+            }
+
             id: tableViewId
             Layout.fillHeight: true
+            Layout.fillWidth: true
 
             model: table_model
         }
