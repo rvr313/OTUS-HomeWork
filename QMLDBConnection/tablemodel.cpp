@@ -6,9 +6,7 @@
 TableModel::TableModel(QObject *parent)
     : QSqlTableModel{parent}
 {
-    setHeaderData(0, Qt::Horizontal, "Date Time");
-    setHeaderData(1, Qt::Horizontal, "Purchase Price");
-    setHeaderData(2, Qt::Horizontal, "Sell Price");
+    // Nothing else to do.
 }
 
 QVariant TableModel::data(const QModelIndex &index, int role) const
@@ -48,65 +46,15 @@ QHash<int, QByteArray> TableModel::roleNames() const
     return role_names;
 }
 
-// QVariant TableModel::headerData(int section, Qt::Orientation orientation, int role) const
-// {
-//     if (orientation == Qt::Horizontal && section < m_headers.size()) {
-//         return m_headers.at(section);
-//     }
-//     return {};
-// }
-
 void TableModel::allDataChanged()
 {
-#if 0
-    {
-        QSqlQuery query;
-
-        if (!query.prepare("SELECT * from Gold")) {
-            qDebug() << "Prepare error: " << query.lastError();
-        }
-
-        if (!query.exec()) {
-            qDebug() <<  "Exec error: " << query.lastError();
-        }
-
-
-        int c = 5;
-        qDebug() << query.record().count();
-        while (query.next() && ((c--) > 0)) {
-            qDebug() << query.value(0).toString() << query.value(1).toString() << query.value(2).toString();
-        }
-    }
-#endif
-
-    //setTable("Gold");
-    // QSqlQuery query;
-    // QString cmd = "SELECT * from Gold;";
-    // if (!query.prepare(cmd) || !query.exec()) {
-    //     qDebug() << query.lastError();
-    // }
-    // fetchMore();
-    // fetchMore();
-    // fetchMore();
-    // //while (canFetchMore())
-    // //  fetchMore();
     setTable("Gold");
     setEditStrategy(QSqlTableModel::OnFieldChange);
-
 
     if (!select()) {
         qDebug() <<  "Select error";
     }
-    auto db = database();
-    if (db.isValid()) {
-        qDebug() << "DB is valid";
-    }
-    if (db.isOpen()) {
-        qDebug() << "DB is open";
-    }
-    QModelIndex ind = this->index(0, 0);
-    qDebug() << "data: " << data(ind, Roles::DateTimeRole);
-    qDebug() << "allDataChanged() :: " << rowCount() << ", " << columnCount();
+
     QModelIndex top_left = this->index(0, 0);
     QModelIndex bottom_right = this->index(rowCount() - 1, columnCount() - 1);
     emit dataChanged(top_left, bottom_right);
