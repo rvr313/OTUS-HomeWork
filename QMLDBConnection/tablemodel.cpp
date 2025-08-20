@@ -1,12 +1,16 @@
 #include "tablemodel.h"
+
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QSqlRecord>
+#include <QDebug>
 
 TableModel::TableModel(QObject *parent)
     : QSqlTableModel{parent}
 {
-    // Nothing else to do.
+//    setHeaderData(0, Qt::Horizontal, "Date Time");
+//    setHeaderData(1, Qt::Horizontal, "Purchase Price");
+//    setHeaderData(2, Qt::Horizontal, "Sell Price");
 }
 
 QVariant TableModel::data(const QModelIndex &index, int role) const
@@ -28,7 +32,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
             return QVariant(0);
         }
     } else if (role > Qt::UserRole) {
-        int column_id = role - Qt::UserRole -1;
+        int column_id = role - Qt::UserRole - 1;
         QModelIndex role_index = this->index(index.row(), column_id);
         return QSqlTableModel::data(role_index, Qt::DisplayRole);
     }
@@ -58,4 +62,16 @@ void TableModel::allDataChanged()
     QModelIndex top_left = this->index(0, 0);
     QModelIndex bottom_right = this->index(rowCount() - 1, columnCount() - 1);
     emit dataChanged(top_left, bottom_right);
+}
+
+int TableModel::getPriceMove(int row, int col) const
+{
+    QModelIndex index = this->index(row, col);
+    if (index.isValid()) {
+        bool ok;
+        if (int res = data(index, Roles::ChangingPriceRole).toInt(&ok); ok) {
+            return res;
+        }
+    }
+    return 0;
 }

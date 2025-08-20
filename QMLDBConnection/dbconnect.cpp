@@ -132,3 +132,4 @@ void DbConnect::connectDb()
 
     setConnected(true);
 }
+

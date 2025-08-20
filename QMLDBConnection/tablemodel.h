@@ -1,14 +1,11 @@
 #ifndef TABLEMODEL_H
 #define TABLEMODEL_H
 
-#include <QObject>
 #include <QSqlTableModel>
-#include <qqml.h>
 
 class TableModel : public QSqlTableModel
 {
     Q_OBJECT
-    QML_ELEMENT
 public:
     enum Roles {
         DateTimeRole = Qt::UserRole + 1,
@@ -26,6 +23,7 @@ public:
 
 public slots:
     void allDataChanged();
+    int getPriceMove(int row, int col) const;
 
 private:
     QStringList m_roles = {"datetime", "purchase", "sell", "changing"};
