@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>ConnectButton.qml</file>
+        <file>HorizontalHeaderDelegate.qml</file>
+        <file>ColumnTextItem.qml</file>
     </qresource>
 </RCC>
