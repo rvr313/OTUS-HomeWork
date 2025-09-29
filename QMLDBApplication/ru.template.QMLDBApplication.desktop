@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+X-Nemo-Application-Type=silica-qt5
+Icon=ru.template.QMLDBApplication
+Exec=/usr/bin/ru.template.QMLDBApplication
+Name=NotesApp
+Name[ru]=Заметки
+
+[X-Application]
+Permissions=
+OrganizationName=ru.template
+ApplicationName=QMLDBApplication
+ExecDBus=/usr/bin/ru.template.QMLDBApplication
